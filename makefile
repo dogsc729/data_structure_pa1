@@ -9,12 +9,17 @@ ARFLAGS = rcv
 DBGFLAGS = -g -D_DEBUG_ON_
 OPTFLAGS = -O2
 
-all	: bin/pgrk
-	@echo -n ""
-
-# optimized version 
-bin/pgrk : src/main.cpp
+# problem2 
+bin/pgrk2 : src/main2.cpp
 	$(CC) -std=c++11 $^ -o $@
+#problem1
+bin/pgrk1 : src/main1.cpp
+	$(CC) -std=c++11 $^ -o $@
+#problem3
+bin/pgrk3 : src/main3.cpp
+	$(CC) -std=c++11 $^ -o $@
+
+
 
 # clean all the .o and executable files
 clean:
