@@ -13,6 +13,7 @@
 #include <new>
 #include <ctime>
 #include <algorithm>
+#include <iomanip>
 
 using namespace std;
 //warning message
@@ -62,9 +63,43 @@ int main()
         fout.close();
     }
     sort(words.begin(), words.end());
-    for (int i = 0; i < words.size(); i++)
+    /*for (int i = 0; i < words.size(); i++)
         cout << words[i] << endl;
-    cout << words.size();
-
+    cout << words.size();*/
+    vector<vector<int>> wordsList(words.size());
+    for (int i = 0; i < 500; i++)
+    {
+        fstream fin("inputs/page" + to_string(i));
+        fstream fout;
+        fout.open("outputs/test" + to_string(i) + ".out", ios::out);
+        string pages;
+        while (fin >> pages)
+        {
+            if (pages == "---------------------")
+            {
+                while (fin >> pages)
+                {
+                    for (int j = 0; j < words.size(); j++)
+                    {
+                        if (words[j] == pages)
+                        {
+                            wordsList[j].push_back(i);
+                        }
+                    }
+                }
+            }
+            else
+                continue;
+        }
+        fin.close();
+        fout.close();
+    }
+    for (int i = 0; i < wordsList.size(); i++)
+    {
+        cout << setiosflags(ios::left) << setw(19) << words[i] << "   ";
+        for (int j = 0; j < wordsList[i].size(); j++)
+            cout << "page" << wordsList[i][j] << " ";
+        cout << endl;
+    }
     return 0;
 }
