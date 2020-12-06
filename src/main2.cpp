@@ -21,13 +21,6 @@ void help_message()
 {
     cout << "usage: ./mps <input file name> <output file name>" << endl;
 }
-void pagerank(double d, double DIFF)
-{
-    vector<double> PR(501, 1 / 501);
-    double diff = 0;
-
-    return;
-}
 
 int main()
 {
@@ -83,7 +76,14 @@ int main()
                     {
                         if (words[j] == pages)
                         {
-                            wordsList[j].push_back(i);
+                            bool exist = false;
+                            for (int k = 0; k < wordsList[j].size(); k++)
+                            {
+                                if (wordsList[j][k] == i)
+                                    exist = true;
+                            }
+                            if (exist == false)
+                                wordsList[j].push_back(i);
                         }
                     }
                 }
@@ -101,5 +101,7 @@ int main()
             cout << "page" << wordsList[i][j] << " ";
         cout << endl;
     }
+    /*for (int i = 0; i < words.size(); i++)
+        cout << words[i] << endl;*/
     return 0;
 }
