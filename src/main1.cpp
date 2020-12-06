@@ -14,7 +14,8 @@
 #include <ctime>
 #include <algorithm>
 #include <map>
-
+#include <iomanip>
+//fuck"
 using namespace std;
 //warning message
 void help_message()
@@ -29,34 +30,38 @@ struct comp
     bool operator()(const T &l,
                     const T &r) const
     {
-        if (l.first != r.first)
+        if (l.second != r.second)
         {
-            return l.first < r.first;
+            return l.second > r.second;
         }
-        return l.second < r.second;
+        return l.first > r.first;
     }
 };
 
 // Function to sort the map according
 // to value in a (key-value) pairs
-void sort(map<int, int> &PR)
+void sort(map<int, double> &PR, vector<int> &outbranching)
 {
 
     // Declare set of pairs and insert
     // pairs according to the comparator
     // function comp()
-    set<pair<int, int>, comp> S(PR.begin(),
-                                PR.end());
+    set<pair<int, double>, comp> S(PR.begin(),
+                                   PR.end());
     // Print the sorted value
     for (auto &it : S)
     {
-        cout << it.first << ' '
-             << it.second << endl;
+        cout << "page" << setiosflags(ios::left) << setw(3) << it.first << ' ' << setw(3) << outbranching[it.first] << " " << it.second << endl;
     }
 }
 void pagerank(vector<int> &outbranching, vector<vector<int>> &citations, double d, double DIFF)
 {
-    map<int,double> PR(501, double(1) / 501);
+
+    map<int, double> PR;
+    for (int i = 0; i < 501; i++)
+    {
+        PR[i] = double(1) / 501;
+    }
     double diff = 0;
     for (int i = 0; i < 501; i++)
     {
@@ -84,8 +89,9 @@ void pagerank(vector<int> &outbranching, vector<vector<int>> &citations, double 
             diff = diff + abs(PRbefore - PR[i]);
         }
     }
-    for (int i = 0; i < 501; i++)
-        cout << PR[i] << endl;
+    /*for (int i = 0; i < 501; i++)
+        cout << PR[i] << endl;*/
+    sort(PR, outbranching);
     return;
 }
 
@@ -105,7 +111,7 @@ int main()
             if (pages == "---------------------")
                 break;
             int number = std::stoi(pages.substr(4));
-            outbranching[number]++;
+            outbranching[i]++;
             citations[number].push_back(i);
         }
         fin.close();
