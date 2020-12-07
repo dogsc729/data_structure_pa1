@@ -64,7 +64,7 @@ void sort(map<int, double> &PR)
         cout << "page" << setiosflags(ios::left) << setw(3) << it.first << ' ' << setw(3) << outbranching[it.first] << " " << it.second << endl;
     }*/
 }
-void sort_topten(map<int, double> &list,fstream& fout)
+void sort_topten(map<int, double> &list)
 {
 
     // Declare set of pairs and insert
@@ -78,7 +78,7 @@ void sort_topten(map<int, double> &list,fstream& fout)
     {
         if (count == 0)
             break;
-        fout << "page" << setiosflags(ios::left) << setw(3) << it.first << " ";
+        cout << "page" << setiosflags(ios::left) << setw(3) << it.first << " ";
         count--;
     }
 }
@@ -117,13 +117,11 @@ map<int, double> pagerank(vector<int> &outbranching, vector<vector<int>> &citati
             diff = diff + abs(PRbefore - PR[i]);
         }
     }
-    /*for (int i = 0; i < 501; i++)
-        cout << PR[i] << endl;*/
     sort(PR);
     return PR;
 }
 
-int main()
+int main(int argc, char *argv[])
 {
     vector<string> words; //存所有字
     vector<int> outbranching(501, 0);
@@ -133,6 +131,8 @@ int main()
     for (int i = 0; i < 500; i++)
     {
         fstream fin("inputs/page" + to_string(i));
+        fstream fout;
+        fout.open("outputs/test" + to_string(i) + ".out", ios::out);
         string pages;
         while (fin >> pages)
         {
@@ -141,6 +141,7 @@ int main()
                 while (fin >> pages)
                 {
                     wordlistofeachpage[i].push_back(pages);
+                    fout << pages << endl;
                     bool exist = false;
                     for (int i = 0; i < words.size(); i++)
                     {
@@ -158,15 +159,15 @@ int main()
             citations[number].push_back(i);
         }
         fin.close();
+        fout.close();
     }
     sort(words.begin(), words.end());
-    /*for (int i = 0; i < words.size(); i++)
-        cout << words[i] << endl;
-    cout << words.size();*/
     vector<vector<int>> wordsList(words.size()); //對應的word裡面有哪些page有包含
     for (int i = 0; i < 500; i++)
     {
         fstream fin("inputs/page" + to_string(i));
+        fstream fout;
+        fout.open("outputs/test" + to_string(i) + ".out", ios::out);
         string pages;
         while (fin >> pages)
         {
@@ -194,31 +195,11 @@ int main()
                 continue;
         }
         fin.close();
+        fout.close();
     }
-    /*for (int i = 0; i < 501; i++)
-        cout << "page" << i << " " << outbranching[i] << endl;*/
-    /*for (int i = 0; i < 501; i++)
-    {
-        cout << "page" << i << " ";
-        for (int j = 0; j < citations[i].size(); j++)
-        {
-            cout << citations[i][j] << " ";
-        }
-        cout << endl;
-    }*/
-    double d = 0.85;
-    double DIFF = 0.001;
-    map<int, double> PR = pagerank(outbranching, citations, d, DIFF);
-    /*for (int i = 0; i < wordsList.size(); i++)
-    {
-        cout << setiosflags(ios::left) << setw(19) << words[i] << "   ";
-        for (int j = 0; j < wordsList[i].size(); j++)
-            cout << "page" << wordsList[i][j] << " ";
-        cout << endl;
-    }*/
+    map<int, double> PR = pagerank(outbranching, citations, 0.25, 0.1);
+
     fstream fin("inputs/list.txt");
-    fstream fout;
-    fout.open("outputs/result_" + to_string(int(d * 100)) + "_" + to_string(DIFF).substr(2, 3) + ".txt", ios::out);
     string word;
     int count = 0;
     while (getline(fin, word))
@@ -238,7 +219,7 @@ int main()
                     exist = true;
             }
             if (exist == false)
-                fout << "none" << endl;
+                cout << "none" << endl;
             else
             {
                 for (int i = 0; i < words.size(); i++)
@@ -251,11 +232,11 @@ int main()
                         }
                     }
                 }
-                sort_topten(singlelist,fout);
-                fout << endl;
+                sort_topten(singlelist);
+                cout << endl;
             }
         }
-        else //case that have multiple inputs
+        else
         {
             bool cases = true;
             //count larger than one, AND case
@@ -271,7 +252,7 @@ int main()
                 if (exist == false)
                 {
                     cases = false;
-                    fout << "AND none" << endl;
+                    cout << "AND none" << endl;
                     break;
                 }
             }
@@ -279,7 +260,7 @@ int main()
             if (cases == true)
             {
                 //cout << "fuck" << endl;
-                map<int, double> searchlist; //存候選人
+                vector<int> searchlist; //存候選人
                 //from page0 to page499
                 for (int i = 0; i < 500; i++)
                 { //for each word in wordsequence
@@ -300,17 +281,16 @@ int main()
                             break;
                     }
                     if (exist == true) //if we find all the word in one page
-                        searchlist.insert({i, PR[i]});
+                        searchlist.push_back(i);
                 }
                 if (searchlist.size() > 0)
                 {
-                    fout << "AND ";
-                    sort_topten(searchlist,fout);
-                    fout << endl;
-                }
-                else
-                {
-                    fout << "AND none" << endl;
+                    cout << "AND ";
+                    for (int i = 0; i < 10; i++)
+                    {
+                        cout << searchlist[i] << " ";
+                    }
+                    cout << endl;
                 }
             }
             //OR case
@@ -328,9 +308,9 @@ int main()
                     }
                 }
             }
-            fout << "OR ";
-            sort_topten(ranklist,fout);
-            fout << endl;
+            cout << "OR ";
+            sort_topten(ranklist);
+            cout << endl;
         }
     }
     return 0;

@@ -40,9 +40,10 @@ struct comp
 
 // Function to sort the map according
 // to value in a (key-value) pairs
-void sort(map<int, double> &PR, vector<int> &outbranching)
+void sort(map<int, double> &PR, vector<int> &outbranching, double d, double DIFF)
 {
-
+    fstream fout;
+    fout.open("outputs/pr_" + to_string(int(d * 100)) + "_" + to_string(DIFF).substr(2, 3) + ".txt", ios::out);
     // Declare set of pairs and insert
     // pairs according to the comparator
     // function comp()
@@ -51,12 +52,11 @@ void sort(map<int, double> &PR, vector<int> &outbranching)
     // Print the sorted value
     for (auto &it : S)
     {
-        cout << "page" << setiosflags(ios::left) << setw(3) << it.first << ' ' << setw(3) << outbranching[it.first] << " " << it.second << endl;
+        fout << "page" << setiosflags(ios::left) << setw(3) << it.first << ' ' << setw(3) << outbranching[it.first] << " " << it.second << endl;
     }
 }
 void pagerank(vector<int> &outbranching, vector<vector<int>> &citations, double d, double DIFF)
 {
-
     map<int, double> PR;
     for (int i = 0; i < 501; i++)
     {
@@ -91,7 +91,7 @@ void pagerank(vector<int> &outbranching, vector<vector<int>> &citations, double 
     }
     /*for (int i = 0; i < 501; i++)
         cout << PR[i] << endl;*/
-    sort(PR, outbranching);
+    sort(PR, outbranching, d, DIFF);
     return;
 }
 
@@ -103,8 +103,6 @@ int main()
     for (int i = 0; i < 500; i++)
     {
         fstream fin("inputs/page" + to_string(i));
-        fstream fout;
-        fout.open("outputs/test" + to_string(i) + ".out", ios::out);
         string pages;
         while (fin >> pages)
         {
@@ -115,7 +113,6 @@ int main()
             citations[number].push_back(i);
         }
         fin.close();
-        fout.close();
     }
     /*for (int i = 0; i < 501; i++)
         cout << "page" << i << " " << outbranching[i] << endl;*/
@@ -128,6 +125,6 @@ int main()
         }
         cout << endl;
     }*/
-    pagerank(outbranching, citations, 0.25, 0.1);
+    pagerank(outbranching, citations, 0.85, 0.001);
     return 0;
 }
