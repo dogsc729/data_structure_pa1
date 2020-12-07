@@ -18,6 +18,9 @@ bin/pgrk1 : src/main1.cpp
 #problem3
 bin/pgrk3 : src/main3.cpp
 	$(CC) -std=c++11 $^ -o $@
+#problem4
+bin/pgrk4 : src/main4.cpp
+	$(CC) -std=c++11 $^ -o $@
 
 
 
